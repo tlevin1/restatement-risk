@@ -1,0 +1,294 @@
+{
+  "universe": {
+    "min_assets": 10000000.0,
+    "rows": 51006,
+    "companies": 8258
+  },
+  "split": {
+    "train": {
+      "years": [
+        2011,
+        2017
+      ],
+      "rows": 26843,
+      "positive_rate": 0.06467235405878627
+    },
+    "val": {
+      "years": [
+        2018,
+        2019
+      ],
+      "rows": 7675,
+      "positive_rate": 0.051596091205211726
+    },
+    "test": {
+      "years": [
+        2020,
+        2023
+      ],
+      "rows": 16488,
+      "positive_rate": 0.0608927704997574
+    }
+  },
+  "tuning": [
+    {
+      "name": "logistic",
+      "params": {
+        "C": 0.01
+      },
+      "val_ap": 0.10192351243560822
+    },
+    {
+      "name": "gradient_boosting",
+      "params": {
+        "lr": 0.03,
+        "leaves": 31,
+        "min_leaf": 200
+      },
+      "val_ap": 0.09650226017912872
+    }
+  ],
+  "test": {
+    "base_rate": {
+      "pr_auc": 0.0610730701848948,
+      "pr_auc_95ci": [
+        0.05593439753653404,
+        0.06652195383165958
+      ],
+      "roc_auc": 0.4999071139878616,
+      "precision_at_100": 0.0625
+    },
+    "prior_revised_rule": {
+      "pr_auc": 0.06614323662652175,
+      "pr_auc_95ci": [
+        0.06026217639252673,
+        0.07421752072670477
+      ],
+      "roc_auc": 0.48203128457495253,
+      "precision_at_100": 0.12
+    },
+    "logistic": {
+      "pr_auc": 0.1224505585028346,
+      "pr_auc_95ci": [
+        0.11210682000482328,
+        0.13670961548699326
+      ],
+      "roc_auc": 0.6585147398008071,
+      "precision_at_100": 0.20750000000000002
+    },
+    "gradient_boosting": {
+      "pr_auc": 0.11694852420925164,
+      "pr_auc_95ci": [
+        0.1054795192017896,
+        0.1327145369852275
+      ],
+      "roc_auc": 0.6359953816868923,
+      "precision_at_100": 0.2
+    }
+  },
+  "permutation_importance_test": [
+    {
+      "feature": "days_to_file",
+      "mean": 0.022925843820905463,
+      "std": 0.0015895596268402734
+    },
+    {
+      "feature": "prior_revision_size",
+      "mean": 0.011844750684004854,
+      "std": 0.0022532722979240727
+    },
+    {
+      "feature": "asset_growth",
+      "mean": 0.007416937452710254,
+      "std": 0.0016517488963063683
+    },
+    {
+      "feature": "years_filing",
+      "mean": 0.006963933142769871,
+      "std": 0.001331536371666662
+    },
+    {
+      "feature": "log_assets",
+      "mean": 0.004599435757400611,
+      "std": 0.0013605820995042635
+    },
+    {
+      "feature": "roa",
+      "mean": 0.003286530167624277,
+      "std": 0.0009703358881941572
+    },
+    {
+      "feature": "cash_to_assets",
+      "mean": 0.00239522272448319,
+      "std": 0.0018603799258309203
+    },
+    {
+      "feature": "accruals",
+      "mean": 0.0013370593298142718,
+      "std": 0.0018528998504119163
+    },
+    {
+      "feature": "soft_assets",
+      "mean": 0.0008706775724353938,
+      "std": 0.0012032051947859393
+    },
+    {
+      "feature": "equity_to_assets",
+      "mean": 0.0006114658668382427,
+      "std": 0.0018898939928363105
+    },
+    {
+      "feature": "sales_growth",
+      "mean": 4.916062029916846e-05,
+      "std": 0.0009954922576776491
+    },
+    {
+      "feature": "d_receivables",
+      "mean": 4.202044413212369e-05,
+      "std": 0.000803568527465283
+    },
+    {
+      "feature": "prior_revised",
+      "mean": 3.420615105555469e-05,
+      "std": 9.39361692317299e-06
+    },
+    {
+      "feature": "loss",
+      "mean": 0.0,
+      "std": 0.0
+    },
+    {
+      "feature": "prior_entity_change",
+      "mean": 0.0,
+      "std": 0.0
+    },
+    {
+      "feature": "prior_spac",
+      "mean": 0.0,
+      "std": 0.0
+    },
+    {
+      "feature": "bs_mismatch",
+      "mean": 0.0,
+      "std": 0.0
+    },
+    {
+      "feature": "prior_amended",
+      "mean": -5.3469713542053655e-05,
+      "std": 0.00013259801472305342
+    },
+    {
+      "feature": "has_inventory",
+      "mean": -0.0001645107335483731,
+      "std": 1.8727835463685645e-05
+    },
+    {
+      "feature": "n_concepts",
+      "mean": -0.00023402666820956098,
+      "std": 0.0011385990507042016
+    },
+    {
+      "feature": "d_inventory",
+      "mean": -0.0004201452198287381,
+      "std": 0.0008232746554683793
+    },
+    {
+      "feature": "has_revenue",
+      "mean": -0.0015689300121617734,
+      "std": 0.000665505533739802
+    }
+  ],
+  "by_year": [
+    {
+      "fiscal_year": 2011,
+      "rows": 3496,
+      "positive_rate": 0.0958,
+      "revised_rate": 0.0649,
+      "amended_rate": 0.0395
+    },
+    {
+      "fiscal_year": 2012,
+      "rows": 3535,
+      "positive_rate": 0.0625,
+      "revised_rate": 0.0424,
+      "amended_rate": 0.0283
+    },
+    {
+      "fiscal_year": 2013,
+      "rows": 3904,
+      "positive_rate": 0.062,
+      "revised_rate": 0.0459,
+      "amended_rate": 0.0223
+    },
+    {
+      "fiscal_year": 2014,
+      "rows": 4076,
+      "positive_rate": 0.0523,
+      "revised_rate": 0.042,
+      "amended_rate": 0.0152
+    },
+    {
+      "fiscal_year": 2015,
+      "rows": 4051,
+      "positive_rate": 0.0521,
+      "revised_rate": 0.0405,
+      "amended_rate": 0.0163
+    },
+    {
+      "fiscal_year": 2016,
+      "rows": 3942,
+      "positive_rate": 0.0518,
+      "revised_rate": 0.0411,
+      "amended_rate": 0.0152
+    },
+    {
+      "fiscal_year": 2017,
+      "rows": 3839,
+      "positive_rate": 0.0808,
+      "revised_rate": 0.068,
+      "amended_rate": 0.0188
+    },
+    {
+      "fiscal_year": 2018,
+      "rows": 3819,
+      "positive_rate": 0.0594,
+      "revised_rate": 0.0458,
+      "amended_rate": 0.0183
+    },
+    {
+      "fiscal_year": 2019,
+      "rows": 3856,
+      "positive_rate": 0.0438,
+      "revised_rate": 0.0288,
+      "amended_rate": 0.0176
+    },
+    {
+      "fiscal_year": 2020,
+      "rows": 3931,
+      "positive_rate": 0.0626,
+      "revised_rate": 0.0463,
+      "amended_rate": 0.0333
+    },
+    {
+      "fiscal_year": 2021,
+      "rows": 4258,
+      "positive_rate": 0.054,
+      "revised_rate": 0.0322,
+      "amended_rate": 0.0291
+    },
+    {
+      "fiscal_year": 2022,
+      "rows": 4174,
+      "positive_rate": 0.0702,
+      "revised_rate": 0.0479,
+      "amended_rate": 0.0307
+    },
+    {
+      "fiscal_year": 2023,
+      "rows": 4125,
+      "positive_rate": 0.057,
+      "revised_rate": 0.0298,
+      "amended_rate": 0.0342
+    }
+  ]
+}
