@@ -57,7 +57,11 @@ class Winsorize(BaseEstimator, TransformerMixin):
 
 
 def load(panel_path: str) -> pd.DataFrame:
-    df = pd.read_parquet(panel_path)
+    return filter_panel(pd.read_parquet(panel_path))
+
+
+def filter_panel(df: pd.DataFrame) -> pd.DataFrame:
+    """The modelling universe: labelled, $10M+ of assets, no SPACs, in range."""
     df = df[df["label"].notna()]
     df = df[np.exp(df["log_assets"]) >= MIN_ASSETS]
     # SPACs are shells, and their FY2020 wave came from an SEC reinterpretation of
@@ -143,22 +147,9 @@ def evaluate(df_test, scores: dict[str, np.ndarray]) -> dict:
     return out
 
 
-def main() -> None:
-    p = argparse.ArgumentParser()
-    p.add_argument("panel")
-    p.add_argument("out_dir")
-    a = p.parse_args()
-    out = Path(a.out_dir)
-    out.mkdir(parents=True, exist_ok=True)
-
-    df = load(a.panel)
-    train, val, test = split(df)
-    print({k: (len(v), round(v["label"].mean(), 4)) for k, v in {"train": train, "val": val, "test": test}.items()})
-
+def fit_and_score(train, val, test):
+    """Tune on validation, refit on train+validation, score test once."""
     choices = tune(train, val)
-    for c in choices:
-        print(f"  {c.name}: {c.params} val PR-AUC {c.val_ap:.4f}")
-
     fit_df = pd.concat([train, val])
     Xf, yf, Xt = fit_df[FEATURES], fit_df["label"], test[FEATURES]
     models = {
@@ -171,7 +162,24 @@ def main() -> None:
         "prior_revised_rule": test["prior_revision_size"].fillna(-1).to_numpy() + test["prior_amended"].to_numpy(),
         **{n: m.predict_proba(Xt)[:, 1] for n, m in models.items()},
     }
-    results = evaluate(test, scores)
+    return choices, models, scores, evaluate(test, scores)
+
+
+def main() -> None:
+    p = argparse.ArgumentParser()
+    p.add_argument("panel")
+    p.add_argument("out_dir")
+    a = p.parse_args()
+    out = Path(a.out_dir)
+    out.mkdir(parents=True, exist_ok=True)
+
+    df = load(a.panel)
+    train, val, test = split(df)
+    print({k: (len(v), round(v["label"].mean(), 4)) for k, v in {"train": train, "val": val, "test": test}.items()})
+    choices, models, scores, results = fit_and_score(train, val, test)
+    for c in choices:
+        print(f"  {c.name}: {c.params} val PR-AUC {c.val_ap:.4f}")
+    Xt = test[FEATURES]
 
     imp = permutation_importance(
         models["gradient_boosting"], Xt, test["label"], scoring="average_precision",
