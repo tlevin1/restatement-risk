@@ -1,5 +1,7 @@
 # Restatement Risk
 
+[![tests](https://github.com/tlevin1/restatement-risk/actions/workflows/tests.yml/badge.svg)](https://github.com/tlevin1/restatement-risk/actions/workflows/tests.yml)
+
 Can you tell, on the day a 10-K is filed, whether its numbers will later be
 restated? This project builds that prediction from SEC EDGAR's XBRL data for
 every US filer, with labels derived from the filings themselves, a strict
