@@ -91,6 +91,23 @@ reviewing a fixed watchlist each year would actually experience.
 - **The obvious heuristic is weak.** "Restated last year" doubles precision at
   the very top but carries almost no ranking information overall.
 
+**Does the 0.1% threshold drive the result?** No. The panel stores raw revision
+sizes, so `restatement_risk.sensitivity` relabels it at other thresholds and
+reruns the identical tune, refit and score-once procedure:
+
+| Revision threshold (share of assets) | Test base rate | Logistic PR-AUC | Lift over base | Gradient boosting PR-AUC | Precision @ top 100 |
+|---|---|---|---|---|---|
+| 0.05% | 6.3% | 0.123 | 1.96× | 0.125 | 20.0% |
+| **0.1% (headline)** | **6.1%** | **0.122** | **2.01×** | **0.117** | **20.8%** |
+| 0.5% | 5.0% | 0.117 | 2.33× | 0.113 | 20.5% |
+| 1.0% | 4.5% | 0.110 | 2.43× | 0.112 | 17.2% |
+
+Lift is about 2× at every threshold and rises slightly for larger revisions:
+big restatements are a little more predictable than small corrections. The base
+rate can't fall much below ~4% because amended filings (10-K/As) count at
+every threshold. Logistic regression and boosting stay within each other's
+noise throughout, so the simpler model stays the right choice.
+
 **What drives the score** (permutation importance on test, and logistic
 coefficients agree on direction):
 
@@ -128,7 +145,8 @@ curl -A "Your Name you@example.com" -o data/raw/companyfacts.zip \
 
 .venv/bin/python -m restatement_risk.build_panel data/raw/companyfacts.zip data/panel.parquet  # ~40s on 8 cores
 .venv/bin/python -m restatement_risk.train data/panel.parquet reports/                         # ~25s
-.venv/bin/python -m pytest -q                                                                  # 11 tests
+.venv/bin/python -m pytest -q                                                                  # 17 tests
+.venv/bin/python -m restatement_risk.sensitivity data/panel.parquet reports/sensitivity.json  # ~35s
 ```
 
 `reports/results.json` holds every number above, including per-year base rates
