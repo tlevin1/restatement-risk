@@ -118,3 +118,16 @@ def test_reverse_merger_is_an_entity_change_not_a_restatement():
     assert math.isnan(rows[2021]["label"])  # unknowable, not a restatement
     assert rows[2022]["prior_entity_change"] == 1
     assert math.isnan(rows[2022]["prior_revision_size"])
+
+
+def test_relabel_matches_building_at_that_threshold():
+    import pandas as pd
+
+    from restatement_risk.panel import relabel
+
+    p = three_years(ni_2021_as_restated=99.0)  # a $1 revision on $10,000 of assets: 0.01%
+    built_default = pd.DataFrame(company_rows(p))  # 0.1% threshold: not material
+    for threshold in (0.00005, 0.001, 0.01):
+        expected = pd.DataFrame(company_rows(p, threshold=threshold))
+        pd.testing.assert_frame_equal(relabel(built_default, threshold), expected)
+    assert relabel(built_default, 0.00005).loc[0, "label"] == 1  # material at 0.005%

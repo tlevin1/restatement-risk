@@ -172,3 +172,19 @@ def company_rows(payload: dict, threshold: float = DEFAULT_THRESHOLD) -> list[di
             **label(cf, filings, i, threshold),
         })
     return rows
+
+
+def relabel(df, threshold: float):
+    """Recompute every threshold-dependent column of a built panel.
+
+    revision_size and prior_revision_size are stored raw, so a different
+    materiality threshold needs no rebuild from SEC data. Matches building the
+    panel at `threshold` exactly (tested).
+    """
+    out = df.copy()
+    size, prior = out["revision_size"], out["prior_revision_size"]
+    out["revised"] = (size > threshold).astype(float)
+    known = size.notna() | (out["amended"] == 1)
+    out["label"] = ((out["revised"] == 1) | (out["amended"] == 1)).astype(float).where(known)
+    out["prior_revised"] = (prior > threshold).astype(float).where(prior.notna())
+    return out
